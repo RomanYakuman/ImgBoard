@@ -1,0 +1,28 @@
+﻿<div class="posts">
+    @foreach (var post in ViewBag.Posts)
+    {
+        <span  class = "thumbnail">
+            <a id="@post.id" href="/posts/post?id=@post.id">
+                <img src="@post.path" alt="">
+            </a>
+        </span>
+    }
+</div>
+<div class="paginator">
+    @{
+        if ((int) ViewData["CurPage"] > 1)
+        {
+            <a href="/Posts/page?id=1">&lt;&lt;</a>
+            <a href="/Posts/page?id=@((int)ViewData["CurPage"]-1)">&lt;</a>
+        }
+        foreach (int pageId in ViewBag.PagArr)
+        {
+            <a href="/Posts/page?id=@pageId">@pageId</a>
+        }
+        if ((int) ViewData["CurPage"] < (int)ViewData["MaxPage"])
+        {
+            <a href="/Posts/page?id=@((int) ViewData["CurPage"]+1)">></a>
+            <a href="/Posts/page?id=@ViewBag.MaxPage">>></a>
+        }
+    }
+</div>

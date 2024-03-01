@@ -1,0 +1,64 @@
+﻿body,
+html {
+    font-size: 16px;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
+    background-color: #201f1d;
+}
+a{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+}
+img{
+    max-width: 100%;
+    max-height: 100%;
+}
+.navigation {
+    background-color: #cc002a;
+    width: 100%;
+    min-height: 50px;
+    top: 0;
+}
+.logo {
+    float: left;
+    font-size: 100%;
+}
+.menu {
+    float: left;
+}
+.menu-element{
+    display:inline-block;
+}
+.signing{
+    float: right;
+}
+.image_container
+{
+    width: 800px;
+    height: 800px;
+    margin: auto;
+}
+.posts {
+    display: grid;
+    grid-template-columns: repeat(6, 200px);
+    column-gap: 20px;
+    row-gap: 20px;
+    width: 85%;
+    clear: both;
+    margin: auto;
+    margin-top: 35px;
+}
+.thumbnail{
+    width: 200px;
+    height: 200px;
+}
+.paginator{
+    margin: 25px;
+}
+.paginator a{
+    margin: 5px;
+}
+.sign{
+    color: #eeeeee;
+}

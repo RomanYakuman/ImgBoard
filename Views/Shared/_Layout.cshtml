@@ -1,0 +1,41 @@
+@using MvcApp.Models
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ImgBoard</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+	<header class="navigation">
+		<a class="logo" href="/">
+			<p>ImgBoard</p>
+		</a>
+		<ul class="menu">
+			<li class="menu-element">
+				<a href="/posts/upload">Upload</a>
+			</li>
+			<li class="menu-element">
+				<a href="/posts/post?id=@RandomPost.GetRandomPostId()">Random</a>
+			</li>
+		</ul>
+		<ul class="signing">
+			<li class="menu-element">
+				<a href="/user/signin">Sign In</a>
+			</li>
+			<li class="menu-element">
+				<a href="/user/signup">Sign Up</a>
+			</li>
+		</ul>
+	</header>
+	<div id="content">
+        @RenderBody()
+	</div>
+	<footer>
+	</footer>
+</body>
+
+</html>	
