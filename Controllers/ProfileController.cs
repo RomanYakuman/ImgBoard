@@ -15,10 +15,5 @@ namespace MvcApp.Controllers
         {
             return View();
         }
-
-        public IActionResult Posts()
-        {
-            return View();
-        }
     }
 }

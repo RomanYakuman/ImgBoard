@@ -2,7 +2,7 @@
 
 public class Post
 {
-    public int id { get; set; }
+    public int id { get; set;}
     public DateTime time_created { get; set; }
     public string user { get; set; }
     public string path { get; set; }
@@ -22,7 +22,9 @@ public class Post
     }
     public Post GetPostById(int postId)
     {
-        using AppContext db = new();
-            return db.Posts.FirstOrDefault(u => u.id == postId);
+        using(AppContext db = new())
+        {
+            return db.Posts.FirstOrDefault(p => p.id == postId);
+        }
     }
 }

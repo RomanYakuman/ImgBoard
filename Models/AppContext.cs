@@ -5,6 +5,7 @@ namespace MvcApp.Models
     public class AppContext : DbContext
     {
         public DbSet<Post> Posts { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
         public AppContext()
         {
             Database.EnsureCreated();
