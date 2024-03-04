@@ -60,5 +60,9 @@ img{
     margin: 5px;
 }
 .sign{
+    margin-top: 2%;
     color: #eeeeee;
+}
+.text-input{
+    text-align: right;
 }
