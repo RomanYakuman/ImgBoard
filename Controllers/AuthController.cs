@@ -31,12 +31,14 @@ namespace MvcApp.Controllers
                var request = HttpContext.Request;
                if(request.Method == "POST")
                {
-                    string username = request.Form["username"];
-                    string password = request.Form["password"];
+                    string? username = request.Form["username"];
+                    string? password = request.Form["password"];
                     string? email = request.Form["email"];
                     var user = new User();
-                    if(username != null && password != null)
-                         user.Registrate(username, password, email);
+                    if(user.Registrate(username, password, email))
+                         return Redirect("~/auth/login");
+                    else
+                         return BadRequest();
                }
                return View();
           }
