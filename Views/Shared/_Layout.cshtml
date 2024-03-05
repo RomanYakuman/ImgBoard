@@ -22,14 +22,27 @@
 				<a href="/posts/post?id=@RandomPost.GetRandomPostId()">Random</a>
 			</li>
 		</ul>
-		<ul class="signing">
-			<li class="menu-element">
-				<a href="/auth/login">Sign In</a>
-			</li>
-			<li class="menu-element">
-				<a href="/auth/signup">Sign Up</a>
-			</li>
-		</ul>
+		@{if (User.Identity.Name != null)
+		{
+			<ul class="signing">
+				<li class="menu-element">
+					<a href="/user/profile?username=@User.Identity.Name">@User.Identity.Name</a>
+				</li>
+			</ul>
+		}
+		else
+		{
+			<ul class="signing">
+				<li class="menu-element">
+					<a href="/auth/login">Sign In</a>
+				</li>
+				<li class="menu-element">
+					<a href="/auth/signup">Sign Up</a>
+				</li>
+			</ul>
+		}
+		}
+		
 	</header>
 	<div id="content">
         @RenderBody()

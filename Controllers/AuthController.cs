@@ -23,11 +23,11 @@ namespace MvcApp.Controllers
                     HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(claimsIdentity));
                     return Redirect("~/");
                }
-               return BadRequest();               
+               return BadRequest();
           }
 
           public IActionResult SignUp()
-          {
+          {    
                var request = HttpContext.Request;
                if(request.Method == "POST")
                {
