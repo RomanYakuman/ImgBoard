@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MvcApp.Models;
 using AppContext = MvcApp.Models.AppContext;
 
 namespace MvcApp.Controllers
@@ -9,7 +8,15 @@ namespace MvcApp.Controllers
     {
         public IActionResult Profile(string username)
         {
-            ViewData["username"] = username;
+            if(HttpContext.Request.Method == "POST")
+            {
+                Response.Cookies.Delete("auth");
+                return Redirect("~/");
+            }
+            using (AppContext db = new())
+            {
+                ViewBag.User = db.Users.FirstOrDefault(u => u.username == username);
+            }
             return View();
         }
         public IActionResult Settings()

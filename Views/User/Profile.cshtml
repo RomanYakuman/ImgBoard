@@ -1,22 +1,54 @@
-﻿<div>
-    <h1>@ViewData["username"]</h1>
+﻿<div class="text-table">
     <table>
         <tbody>
         <tr>
-            User id: 
+            <td>
+                <h1 class="text-input">@ViewBag.User.username</h1>
+            </td>
         </tr>
-        <tr>
-            Join date:
+        <tr class="text-input">
+            <td>
+                User id: 
+            </td>
+            <td>
+                @ViewBag.User.user_id
+            </td>
         </tr>
-        <tr>
-            Email adress:
+        <tr class="text-input">
+            <td>
+                Join date: 
+            </td>
+            <td>
+                @ViewBag.User.reg_date
+            </td>
         </tr>
-        <tr>
-            Uploads:
+        <tr class="text-input">
+            <td>
+                Email adress: 
+            </td>
+            <td>
+                @ViewBag.User.email
+            </td>
         </tr>
-        <tr>
-            Comments
+        <tr class="text-input">
+            <td>
+                Uploads:
+            </td>
+            <td>
+                @ViewBag.User.email
+            </td>
+        </tr>
+        <tr class="text-input">
+            <td>
+                Comments:
+            </td>
+            <td>
+                @ViewBag.User.email
+            </td>
         </tr>
         </tbody>
     </table>
+    <form class="menu-element" action="" method="POST">
+        <input type="submit" value="Logout">
+    </form>
 </div>
