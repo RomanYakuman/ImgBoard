@@ -5,6 +5,7 @@ html {
     text-align: center;
     text-decoration: none;
     background-color: #201f1d;
+    color:#eeeeee;
 }
 a{
     text-decoration: none;
@@ -59,9 +60,8 @@ img{
 .paginator a{
     margin: 5px;
 }
-.sign{
+.text-table{
     margin-top: 2%;
-    color: #eeeeee;
 }
 .text-input{
     text-align: right;
