@@ -21,19 +21,17 @@ namespace MvcApp.Controllers
             return View();
         }
         public IActionResult Post(int id)
-        {
-            var post = new Post().GetPostById(id);
-            ViewData["path"] = post.path;
+        {;
+            ViewBag.post = DBManager.GetPostById(id);
             return View();
         }
         [Authorize]
-        public IActionResult Upload()
+        public IActionResult Upload(int id)
         {
             var request = HttpContext.Request;
             if (request.Method == "POST")
             {
-                Post post = new();
-                post.UploadToServer(request.Form.Files);
+                Post post = new(request.Form.Files, request.Form["tags"], User.Identity.Name, Request.Form["description"]);
             }
             return View();
         }

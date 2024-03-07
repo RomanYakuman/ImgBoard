@@ -19,7 +19,7 @@
 				<a href="/posts/upload">Upload</a>
 			</li>
 			<li class="menu-element">
-				<a href="/posts/post?id=@RandomPost.GetRandomPostId()">Random</a>
+				<a href="/posts/post?id=@DBManager.GetRandomPostId()">Random</a>
 			</li>
 		</ul>
 		@{if (User.Identity.Name != null)
