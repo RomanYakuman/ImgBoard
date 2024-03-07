@@ -1,6 +1,30 @@
 ﻿
 <h1 style="color: #eee;">UPLOAD</h1>
 <form class="menu-element" enctype="multipart/form-data"  action="/Posts/Upload" method="POST">
-    <input type="file" name="userfile">
-    <input type="submit" value="Submit">
+    <table>
+            <tbody>
+                <tr class="text-input">
+                    <td>
+                        <input type="file" name="userfile">
+                    </td>
+                </tr>
+                <tr class="text-input">
+                    <td>
+                        Tags:
+                        <input type="text" name="tags">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Description
+                       <input type="text" name="description">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                       <input type="submit" value="Submit">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 </form>

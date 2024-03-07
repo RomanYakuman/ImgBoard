@@ -1,3 +1,9 @@
 ﻿<div class="image_container">
-    <img src="@ViewData["path"]";>
+    <img src="@ViewBag.post.path";>
+    <br />
+    Tags: @ViewBag.post.tags
+    <br />
+    Description: @ViewBag.post.description
+    <br />
+    Posted by: @ViewBag.post.user
 </div>
