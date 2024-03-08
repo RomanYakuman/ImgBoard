@@ -64,8 +64,7 @@ namespace MvcApp.Controllers
                     return Unauthorized();
                 if(post != null && Request.Method == "POST")
                 {
-                    db.Posts.Remove(post);
-                    db.SaveChangesAsync();
+                    PostManager.DeletePost(post, db);
                     return View();
                 }
                 else

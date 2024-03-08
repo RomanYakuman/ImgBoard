@@ -20,4 +20,10 @@ public static class PostManager
             return db.Posts.FirstOrDefault(p => p.id == id);
         }
     }
+    public static void DeletePost(Post post, AppContext db)
+    {
+        File.Delete($"{Directory.GetCurrentDirectory()}/wwwroot{post.path}");
+        db.Posts.Remove(post);
+        db.SaveChangesAsync();
+    }
 }
