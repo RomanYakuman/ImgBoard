@@ -1,6 +1,6 @@
 ﻿namespace MvcApp.Models;
 
-public static class DBManager
+public static class PostManager
 {
     public static int GetRandomPostId()
     {
