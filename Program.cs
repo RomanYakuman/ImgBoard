@@ -1,9 +1,8 @@
-using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
-using Microsoft.Extensions.Options;
-using MvcApp.Models;
+
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpLogging(opts => {});
 builder.Services.AddAuthentication("Cookies")
     .AddCookie(options => 
     {
@@ -16,6 +15,7 @@ WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseHttpLogging();
     app.UseDeveloperExceptionPage();
 }
 app.UseAuthentication();
