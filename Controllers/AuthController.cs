@@ -30,9 +30,9 @@ namespace MvcApp.Controllers
                var request = HttpContext.Request;
                if(request.Method == "POST")
                {
-                    string username = request.Form["username"];
-                    string password = request.Form["password"];
-                    string email = request.Form["email"];
+                    string? username = request.Form["username"];
+                    string? password = request.Form["password"];
+                    string? email = request.Form["email"];
                     var user = new User();
                     if(user.Registrate(username, password, email))
                          return Redirect("~/auth/login");
