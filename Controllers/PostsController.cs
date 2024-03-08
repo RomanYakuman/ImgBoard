@@ -21,8 +21,8 @@ namespace MvcApp.Controllers
             return View();
         }
         public IActionResult Post(int id)
-        {;
-            ViewBag.post = DBManager.GetPostById(id);
+        {
+            ViewBag.post = PostManager.GetPostById(id);
             return View();
         }
         [Authorize]
@@ -34,6 +34,43 @@ namespace MvcApp.Controllers
                 Post post = new(request.Form.Files, request.Form["tags"], User.Identity.Name, Request.Form["description"]);
             }
             return View();
+        }
+        public IActionResult Edit(int id)
+        {
+            using(AppContext db = new())
+            {
+                Post post = PostManager.GetPostById(id);
+                if(post.user != User.Identity.Name)
+                    return Unauthorized();
+                ViewBag.post = post;
+                if(Request.Method == "POST")
+                {
+                    post.tags = Request.Form["tags"].ToString() ?? post.tags;
+                    post.description = Request.Form["description"].ToString() ?? post.description;
+                    db.Posts.Update(post);
+                    db.SaveChanges();
+                    return Redirect($"~/posts/post?id={post.id}");
+                }
+            }
+            return View();
+        } 
+        
+        public IActionResult Delete(int id)
+        {
+            using(AppContext db = new())
+            {
+                var post = PostManager.GetPostById(id);
+                if(post.user != User.Identity.Name)
+                    return Unauthorized();
+                if(post != null && Request.Method == "POST")
+                {
+                    db.Posts.Remove(post);
+                    db.SaveChangesAsync();
+                    return View();
+                }
+                else
+                    return NotFound();
+            }
         }
     }
 }

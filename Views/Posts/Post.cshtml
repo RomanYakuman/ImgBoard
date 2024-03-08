@@ -6,4 +6,9 @@
     Description: @ViewBag.post.description
     <br />
     Posted by: @ViewBag.post.user
+    <br />
+    <a href="/posts/edit?id=@ViewBag.post.id">Edit post</a>
+    <form class="menu-element" enctype="multipart/form-data" action="/posts/delete?id=@ViewBag.post.id" method="POST">
+        <input type="submit" value="Delete post" name="delete">
+    </form>
 </div>
