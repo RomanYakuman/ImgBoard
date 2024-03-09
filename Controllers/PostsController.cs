@@ -22,7 +22,15 @@ namespace MvcApp.Controllers
         }
         public IActionResult Post(int id)
         {
-            ViewBag.post = PostManager.GetPostById(id);
+            Post post = PostManager.GetPostById(id);
+            ViewBag.comments = PostManager.GetCommentSection(id);
+            ViewBag.post = post;
+            if(Request.Method == "POST")
+            {
+                PostManager.AddComment(Request.Form["comment"]
+                , post.id, User.Identity.Name);
+                return Redirect($"/posts/post?id={post.id}");
+            }
             return View();
         }
         [Authorize]
@@ -31,7 +39,8 @@ namespace MvcApp.Controllers
             var request = HttpContext.Request;
             if (request.Method == "POST")
             {
-                Post post = new(request.Form.Files, request.Form["tags"], User.Identity.Name, Request.Form["description"]);
+                Post post = new(request.Form.Files, request.Form["tags"]
+                , User.Identity.Name, Request.Form["description"]);
             }
             return View();
         }

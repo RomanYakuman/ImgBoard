@@ -6,6 +6,7 @@ namespace MvcApp.Models
     {
         public DbSet<Post> Posts { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Comment> Comments { get; set; } = null!;
         public AppContext()
         {
             Database.EnsureCreated();

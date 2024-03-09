@@ -14,4 +14,20 @@
             <input type="submit" value="Delete post" name="delete">
         </form>
     }}
+    <div class="comment-section">
+    <form class="menu-element" action="" method="POST">
+        <input type="text" placeholder="Enter your comment here" name="comment">
+        <input type="submit" value="Submit">
+    </form>
+    @{foreach (var comment in ViewBag.comments)
+        {
+            <div>
+                @comment.time_created
+                @comment.user
+                <br>
+                @comment.comment
+            </div>
+        }
+    }
+    </div>
 </div>

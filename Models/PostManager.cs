@@ -26,4 +26,25 @@ public static class PostManager
         db.Posts.Remove(post);
         db.SaveChangesAsync();
     }
+    public static void AddComment(string comment, int postId, string user)
+    {
+        Comment comm = new();
+        comm.user = user;
+        comm.comment = comment;
+        comm.post_id = postId;
+        comm.time_created = DateTime.Now;
+        using (AppContext db = new())
+        {
+            db.Add(comm);
+            db.SaveChanges();
+        }
+    }
+    public static List<Comment> GetCommentSection(int postId)
+    {
+        using(AppContext db = new())
+        {
+            return db.Comments.Where(c => c.post_id == postId)
+                .OrderByDescending(c =>  c.time_created).ToList();
+        }
+    }
 }

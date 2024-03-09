@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Text.RegularExpressions;
+
 namespace MvcApp.Models;
 
 public partial class User

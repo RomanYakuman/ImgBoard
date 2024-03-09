@@ -15,7 +15,7 @@
             <a href="/Posts/page?id=1">&lt;&lt;</a>
             <a href="/Posts/page?id=@((int)ViewData["CurPage"]-1)">&lt;</a>
         }
-        foreach (int pageId in ViewBag.PagArr)
+        foreach (var pageId in ViewBag.PagArr)
         {
             <a href="/Posts/page?id=@pageId">@pageId</a>
         }
