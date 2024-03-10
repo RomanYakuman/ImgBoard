@@ -20,10 +20,25 @@ public class PostsController : Controller
         }
         return View();
     }
+    public IActionResult Page(string tags, int id = 1)
+    {   
+        using (AppContext db = new())
+        {
+            int pageSize = db.Tags.Where(t => t.tag == tags).Count() > 18? 18 : db.Tags.Where(t => t.tag == tags).Count();
+            var pgn = new Paginator(id, pageSize);
+            ViewData["MaxPage"] = pgn.PageCount;
+            ViewData["CurPage"] = pgn.CurPage;
+            ViewBag.PagArr = pgn.PagArr;
+            ViewBag.Posts = db.Posts.OrderByDescending(x =>  x.id)
+                .Skip(pgn.SkipValue).Take(pageSize).ToList();
+        }
+        return View();
+    }
     public IActionResult Post(int id)
     {
         Post post = PostManager.GetPostById(id);
         ViewBag.comments = PostManager.GetCommentSection(id);
+        ViewBag.tags = PostManager.GetTagsById(id);
         ViewBag.post = post;
         if(Request.Method == "POST")
         {
@@ -39,7 +54,7 @@ public class PostsController : Controller
         var request = HttpContext.Request;
         if (request.Method == "POST")
         {
-            Post post = new(request.Form.Files, request.Form["tags"]
+            PostManager.CreatePost(request.Form.Files, request.Form["tags"]
             , User.Identity.Name, Request.Form["description"]);
         }
         return View();
@@ -54,7 +69,6 @@ public class PostsController : Controller
             ViewBag.post = post;
             if(Request.Method == "POST")
             {
-                post.tags = Request.Form["tags"].ToString() ?? post.tags;
                 post.description = Request.Form["description"].ToString() ?? post.description;
                 db.Posts.Update(post);
                 db.SaveChanges();

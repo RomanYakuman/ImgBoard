@@ -1,7 +1,12 @@
 ﻿<div class="image_container">
     <img src="@ViewBag.post.path";>
     <br />
-    Tags: @ViewBag.post.tags
+    Tags: @{
+        foreach (var item in ViewBag.tags)
+        {
+            <a href="">@item.tag</a>
+        }
+    }
     <br />
     Description: @ViewBag.post.description
     <br />

@@ -21,6 +21,12 @@
 			<li class="menu-element">
 				<a href="/posts/post?id=@PostManager.GetRandomPostId()">Random</a>
 			</li>
+			<li class="menu-element">
+				<form class="menu-element" method="GET">
+            		<input type="search" name="tags">
+					<input type="submit" value="Submit">
+        		</form>
+			</li>
 		</ul>
 		@{if (User.Identity.Name != null)
 		{
