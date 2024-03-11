@@ -9,11 +9,10 @@ public class AuthController : Controller
 {
      public IActionResult Login()
      {    
-          var request = HttpContext.Request;
-          if(request.Method != "POST")
+          if(Request.Method != "POST")
                return View();
-          var username = request.Form["username"];
-          var password = request.Form["password"];
+          var username = Request.Form["username"];
+          var password = Request.Form["password"];
           var user = new User();
           if(user.Authenticate(username, password))
           {
@@ -27,12 +26,11 @@ public class AuthController : Controller
 
      public IActionResult SignUp()
      {    
-          var request = HttpContext.Request;
-          if(request.Method == "POST")
+          if(Request.Method == "POST")
           {
-               string? username = request.Form["username"];
-               string? password = request.Form["password"];
-               string? email = request.Form["email"];
+               string? username = Request.Form["username"];
+               string? password = Request.Form["password"];
+               string? email = Request.Form["email"];
                var user = new User();
                if(user.Registrate(username, password, email))
                     return Redirect("~/auth/login");

@@ -52,19 +52,17 @@ public static class PostManager
             return db.Posts.Skip(number).First().id;
         }
     }
-    public static Post GetPostById(int id)
+    public static PostPage GetPostPage(int postId)
     {
-        using (AppContext db = new())
+        PostPage postPage = new();
+        using(AppContext db = new())
         {
-            return db.Posts.FirstOrDefault(p => p.id == id);
+            postPage.post = db.Posts.FirstOrDefault(p => p.id == postId);
+            postPage.tags =  db.Tags.Where(t => t.post_id == postId).ToList();
+            postPage.commentSection = db.Comments.Where(c => c.post_id == postId)
+                .OrderByDescending(c =>  c.time_created).ToList();
         }
-    }
-    public static List<Tag> GetTagsById(int postId)
-    {
-        using (AppContext db = new())
-        {
-            return db.Tags.Where(t => t.post_id == postId).ToList();
-        }
+        return postPage;
     }
     public static void DeletePost(Post post, AppContext db)
     {
@@ -87,12 +85,11 @@ public static class PostManager
             db.SaveChanges();
         }
     }
-    public static List<Comment> GetCommentSection(int postId)
-    {
-        using(AppContext db = new())
-        {
-            return db.Comments.Where(c => c.post_id == postId)
-                .OrderByDescending(c =>  c.time_created).ToList();
-        }
-    }
+}
+public struct PostPage
+{
+    public List<Comment> commentSection {get;set;}
+    public List<Tag> tags {get;set;}
+    public Post post {get;set;}
+
 }
