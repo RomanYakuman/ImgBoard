@@ -1,0 +1,11 @@
+@{foreach (var comment in ViewBag.comments)
+    {
+        <div>
+            @comment.time_created
+            @comment.user
+            <br>
+            @comment.comment
+        </div>
+        <br>
+    }
+}

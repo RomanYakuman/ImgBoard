@@ -1,4 +1,4 @@
-﻿<div class="text-table">
+<div class="text-table">
     <table>
         <tbody>
         <tr>
@@ -32,18 +32,33 @@
         </tr>
         <tr class="text-input">
             <td>
-                Uploads:
+                Uploads: 
             </td>
             <td>
-                @ViewBag.User.email
+                <a href="/user/posts?username=@ViewBag.User.username">@ViewData["uploads"]</a>
             </td>
         </tr>
         <tr class="text-input">
             <td>
-                Comments:
+                Comments: 
             </td>
             <td>
-                @ViewBag.User.email
+                <a href="/user/comments?username=@ViewBag.User.username">@ViewData["comments"]</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a>Change username</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a>Change password</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a>Delete account</a>
             </td>
         </tr>
         </tbody>
