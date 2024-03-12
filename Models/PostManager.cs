@@ -1,31 +1,34 @@
-﻿namespace MvcApp.Models;
+﻿
+namespace MvcApp.Models;
 
 public static class PostManager
 {
-    public static void CreatePost(IFormFileCollection file, string tags, string user, string description)
+    public static void LoadPostToDb(Post post, string tags, AppContext db)
     {
-        var post = new Post
+        db.Add(post);
+        db.SaveChanges();
+        post = db.Posts.FirstOrDefault(p => p.path == post.path);
+        if(tags != null && tags.Length > 0 && post != null)
+        {
+            var tagArr = CreateTagArr(tags, post.id);
+            foreach(var tag in tagArr)
+                db.Add(tag);
+            db.SaveChanges();
+        }
+    }
+    public static Post CreatePost(string description, string user, IFormFile file)
+    {
+        Post post = new()
         {
             time_created = DateTime.Now,
             user = user,
             description = description,
-            path = @$"/server/{Path.GetRandomFileName()}{Path.GetRandomFileName()}.{file[0].ContentType.Split("/")[1]}"
+            path = @$"/server/{Path.GetRandomFileName()}{Path.GetRandomFileName()}.
+                {file.ContentType.Split("/")[1]}"
         };
-        using (AppContext db = new())
-        {
-            db.Add(post);
-            db.SaveChanges();
-            using FileStream fileStream = new("wwwroot/" + post.path, FileMode.Create);
-                file[0].CopyTo(fileStream);
-            post = db.Posts.FirstOrDefault(p => p.path == post.path);
-            if(tags != null && tags.Length > 0 && post != null)
-            {
-                var tagArr = CreateTagArr(tags, post.id);
-                foreach(var tag in tagArr)
-                    db.Add(tag);
-                db.SaveChanges();
-            }
-        }
+        using FileStream fileStream = new("wwwroot/" + post.path, FileMode.Create);
+            file.CopyTo(fileStream);
+        return post;
     }
     public static Tag[] CreateTagArr(string tagString, int postId)
     {
@@ -41,6 +44,33 @@ public static class PostManager
         }
         return tagArr;
     }
+    public static PostPage GetPostPage(int postId, AppContext db)
+    {
+        PostPage postPage = new();
+        postPage.post = db.Posts.FirstOrDefault(p => p.id == postId);
+        postPage.tags =  db.Tags.Where(t => t.post_id == postId).ToList();
+        postPage.commentSection = db.Comments.Where(c => c.post_id == postId)
+            .OrderByDescending(c =>  c.time_created).ToList();
+        return postPage;
+    }
+    public static void DeletePost(Post post, AppContext db)
+    {
+        File.Delete($"{Directory.GetCurrentDirectory()}/wwwroot{post.path}");
+        db.Posts.Remove(post);
+        db.SaveChangesAsync();
+    }
+    public static void AddComment(string comment, int postId, string user, AppContext db)
+    {
+        Comment comm = new()
+        {
+            user = user,
+            comment = comment,
+            post_id = postId,
+            time_created = DateTime.Now
+        };
+        db.Add(comm);
+        db.SaveChanges();
+    }
     public static int GetRandomPostId()
     {
         using (AppContext db = new())
@@ -50,39 +80,6 @@ public static class PostManager
                 return 0;
             var number = new Random().Next(0, count);
             return db.Posts.Skip(number).First().id;
-        }
-    }
-    public static PostPage GetPostPage(int postId)
-    {
-        PostPage postPage = new();
-        using(AppContext db = new())
-        {
-            postPage.post = db.Posts.FirstOrDefault(p => p.id == postId);
-            postPage.tags =  db.Tags.Where(t => t.post_id == postId).ToList();
-            postPage.commentSection = db.Comments.Where(c => c.post_id == postId)
-                .OrderByDescending(c =>  c.time_created).ToList();
-        }
-        return postPage;
-    }
-    public static void DeletePost(Post post, AppContext db)
-    {
-        File.Delete($"{Directory.GetCurrentDirectory()}/wwwroot{post.path}");
-        db.Posts.Remove(post);
-        db.SaveChangesAsync();
-    }
-    public static void AddComment(string comment, int postId, string user)
-    {
-        Comment comm = new()
-        {
-            user = user,
-            comment = comment,
-            post_id = postId,
-            time_created = DateTime.Now
-        };
-        using (AppContext db = new())
-        {
-            db.Add(comm);
-            db.SaveChanges();
         }
     }
 }

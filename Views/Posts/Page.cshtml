@@ -9,20 +9,22 @@
     }
 </div>
 <div class="paginator">
-    @{
-        if (ViewBag.pgn.CurPage > 1)
+    @{if(ViewBag.Pgn.FirstPage > 0)
+    {
+        if (ViewBag.Pgn.CurPage > 1)
         {
             <a href="/Posts/page?id=1">&lt;&lt;</a>
-            <a href="/Posts/page?id=@ViewBag.pgn.CurPage-1">&lt;</a>
+            <a href="/Posts/page?id=@ViewBag.Pgn.CurPage-1">&lt;</a>
         }
-        foreach (var pageId in ViewBag.pgn.PagArr)
+        for(int i = @ViewBag.Pgn.FirstPage; i <= @ViewBag.Pgn.LastPage; i++)
         {
-            <a href="/Posts/page?id=@pageId">@pageId</a>
+            <a href="/Posts/page?id=@i">@i</a>
         }
-        if (ViewBag.pgn.CurPage < ViewBag.pgn.PageCount)
+        if (ViewBag.Pgn.CurPage < ViewBag.Pgn.PageCount)
         {
-            <a href="/Posts/page?id=@ViewBag.pgn.CurPage+1">></a>
-            <a href="/Posts/page?id=@ViewBag.pgn.PageCount">>></a>
+            <a href="/Posts/page?id=@ViewBag.Pgn.CurPage+1">></a>
+            <a href="/Posts/page?id=@ViewBag.Pgn.PageCount">>></a>
         }
+    }
     }
 </div>

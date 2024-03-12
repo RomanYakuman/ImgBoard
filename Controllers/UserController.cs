@@ -1,6 +1,5 @@
 ﻿using AppContext = MvcApp.Models.AppContext;
 using Microsoft.AspNetCore.Mvc;
-using MvcApp.Models;
 
 namespace MvcApp.Controllers;
 
@@ -27,20 +26,15 @@ public class UserController : Controller
     public IActionResult Comments(string username)
     {
         using (AppContext db = new())
-        {
-            var comments = db.Comments.Where(c => c.user == username)
-                .OrderByDescending(c => c.time_created).ToList();
-            ViewBag.comments = comments;
-        }
+        ViewBag.comments = db.Comments.Where(c => c.user == username)
+            .OrderByDescending(c => c.time_created).ToList();
         return View();
     }
     public IActionResult Posts(string username, int id = 1)
     {
         using (AppContext db = new())
-        {
-            ViewBag.Posts = db.Posts.Where(p => p.user == username)
-                .OrderByDescending(x =>  x.id).ToList();
-        }
+        ViewBag.Posts = db.Posts.Where(p => p.user == username)
+            .OrderByDescending(x =>  x.id).ToList();
         return View();
     }
 }
