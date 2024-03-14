@@ -17,23 +17,23 @@ public class UserController : Controller
             var user = db.Users.FirstOrDefault(u => u.username == username);
             ViewBag.User = user;
             ViewData["uploads"] = db.Posts.
-                Where(p => p.user == user.username).Count();
+                Where(p => p.user_id == user.user_id).Count();
             ViewData["comments"] = db.Comments.
-                Where(c => c.user == user.username).Count();
+                Where(c => c.user_id == user.user_id).Count();
         }
         return View();
     }
-    public IActionResult Comments(string username)
+    public IActionResult Comments(int user_id)
     {
         using (AppContext db = new())
-        ViewBag.comments = db.Comments.Where(c => c.user == username)
+        ViewBag.comments = db.Comments.Where(c => c.user_id == user_id)
             .OrderByDescending(c => c.time_created).ToList();
         return View();
     }
-    public IActionResult Posts(string username, int id = 1)
+    public IActionResult Posts(int user_id, int id = 1)
     {
         using (AppContext db = new())
-        ViewBag.Posts = db.Posts.Where(p => p.user == username)
+        ViewBag.Posts = db.Posts.Where(p => p.user_id == user_id)
             .OrderByDescending(x =>  x.id).ToList();
         return View();
     }

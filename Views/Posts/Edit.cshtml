@@ -9,13 +9,13 @@
                 <tr class="text-input">
                     <td>
                         Tags:
-                        <input type="text" name="tags">
+                        <input type="text" name="tags" id="tags">
                     </td>
                 </tr>
                 <tr>
                     <td>
                         Description
-                       <input type="text" name="description">
+                       <input type="text" name="description" id="description">
                     </td>
                 </tr>
                 <tr>
@@ -25,4 +25,10 @@
                 </tr>
             </tbody>
         </table>
+        <script>
+            var tags = '@(ViewData["tags"])';
+            var desc = '@(ViewData["description"])';
+            document.getElementById("tags").value = tags;
+            document.getElementById("description").value = desc;
+        </script> 
 </form>

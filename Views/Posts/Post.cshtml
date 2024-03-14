@@ -1,21 +1,21 @@
 ﻿<div class="image_container">
-    <img src="@ViewBag.PostPage.post.path";>
+    <img src="@ViewBag.PostPage.Post.path";>
     <br />
     Tags: @{
-        foreach (var item in ViewBag.PostPage.tags)
+        foreach (var item in ViewBag.PostPage.Tags)
         {
-            <a href="">@item.tag</a>
+            <a href="">@item</a>
         }
     }
     <br />
-    Description: @ViewBag.PostPage.post.description
+    Description: @ViewBag.PostPage.Post.description
     <br />
-    Posted by: @ViewBag.PostPage.post.user
+    Posted by: @ViewBag.PostPage.Username
     <br />
-    @{if(ViewBag.PostPage.post.user == User.Identity.Name)
+    @{if(ViewBag.PostPage.Username == User.Identity.Name)
     {
-        <a href="/posts/edit?id=@ViewBag.PostPage.post.id">Edit post</a>
-        <form class="menu-element" enctype="multipart/form-data" action="/posts/delete?id=@ViewBag.PostPage.post.id" method="POST">
+        <a href="/posts/edit?id=@ViewBag.PostPage.Post.id">Edit post</a>
+        <form class="menu-element" enctype="multipart/form-data" action="/posts/delete?id=@ViewBag.PostPage.Post.id" method="POST">
             <input type="submit" value="Delete post" name="delete">
         </form>
     }}
@@ -28,11 +28,11 @@
         </form>
     }}
     
-    @{foreach (var comment in ViewBag.PostPage.commentSection)
+    @{foreach (var comment in ViewBag.PostPage.CommentSection)
         {
             <div>
                 @comment.time_created
-                @comment.user
+                @comment.username
                 <br>
                 @comment.comment
             </div>
