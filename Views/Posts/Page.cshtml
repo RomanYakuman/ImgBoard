@@ -2,8 +2,8 @@
     @foreach (var post in ViewBag.Posts)
     {
         <span  class = "thumbnail">
-            <a id="@post.id" href="/posts/post?id=@post.id">
-                <img src="@post.path" alt="">
+            <a Id="@post.Id" href="/posts/post?Id=@post.Id">
+                <img src="@post.Path" alt="">
             </a>
         </span>
     }
@@ -11,19 +11,21 @@
 <div class="paginator">
     @{if(ViewBag.Pgn.FirstPage > 0)
     {
+        var prev = ViewBag.Pgn.CurPage-1;
+        var next = ViewBag.Pgn.CurPage+1;
         if (ViewBag.Pgn.CurPage > 1)
         {
-            <a href="/Posts/page?id=1">&lt;&lt;</a>
-            <a href="/Posts/page?id=@ViewBag.Pgn.CurPage-1&tags=@ViewData["tags"]">&lt;</a>
+            <a href="/Posts/page?Id=1">&lt;&lt;</a>
+            <a href="/Posts/page?Id=@prev&tags=@ViewData["tags"]">&lt;</a>
         }
         for(int i = @ViewBag.Pgn.FirstPage; i <= @ViewBag.Pgn.LastPage; i++)
         {
-            <a href="/Posts/page?id=@i&tags=@ViewData["tags"]">@i</a>
+            <a href="/Posts/page?Id=@i&tags=@ViewData["tags"]">@i</a>
         }
         if (ViewBag.Pgn.CurPage < ViewBag.Pgn.PageCount)
         {
-            <a href="/Posts/page?id=@ViewBag.Pgn.CurPage+1&tags=@ViewData["tags"]">></a>
-            <a href="/Posts/page?id=@ViewBag.Pgn.PageCount&tags=@ViewData["tags"]">>></a>
+            <a href="/Posts/page?Id=@next&tags=@ViewData["tags"]">></a>
+            <a href="/Posts/page?Id=@ViewBag.Pgn.PageCount&tags=@ViewData["tags"]">>></a>
         }
     }
     }
