@@ -7,44 +7,44 @@ public static class PostManager
     {
         db.Add(post);
         db.SaveChanges();
-        post = db.Posts.FirstOrDefault(p => p.path == post.path);
-        if(tags != null && tags.Length > 0 && post != null)
+        var newPost = db.Posts.FirstOrDefault(p => p.Path == post.Path);
+        if(tags != null && tags.Length > 0 && newPost != null)
         {
-            var tagArr = CreateTagArr(tags, post.id);
+            var tagArr = CreateTagArr(tags, newPost.Id);
             foreach(var tag in tagArr)
                 db.Add(tag);
             db.SaveChanges();
         }
     }
-    public static Post CreatePost(string description, int userId, IFormFile file)
+    public static Post CreatePost(string Description, int userId, IFormFile file)
     {
         Post post = new()
         {
-            time_created = DateTime.Now,
-            user_id = userId,
-            description = description,
-            path = @$"/server/{Path.GetRandomFileName()}{Path.GetRandomFileName()}.{file.ContentType.Split("/")[1]}"
+            TimeCreated = DateTime.Now,
+            UserId = userId,
+            Description = Description,
+            Path = @$"/server/{Path.GetRandomFileName()}{Path.GetRandomFileName()}.{file.ContentType.Split("/")[1]}"
         };
-        using FileStream fileStream = new("wwwroot/" + post.path, FileMode.Create);
+        using FileStream fileStream = new("wwwroot/" + post.Path, FileMode.Create);
             file.CopyTo(fileStream);
         return post;
     }
     public static PostPage GetPostPage(int postId, AppContext db)
     {
-        var post = db.Posts.FirstOrDefault(p => p.id == postId);
-        var tags = db.Tags.Where(t => t.post_id == postId).Select(t => t.tag).ToList();
-        var username = db.Users.FirstOrDefault(u => u.user_id == post.user_id).username;
+        var post = db.Posts.FirstOrDefault(p => p.Id == postId);
+        var tags = db.Tags.Where(t => t.PostId == postId).Select(t => t.TagString).ToList();
+        var username = db.Users.FirstOrDefault(u => u.UserId == post.UserId).Username;
         var comments = db.Comments.Join(db.Users,
-                c => c.user_id, 
-                u => u.user_id,
+                c => c.UserId, 
+                u => u.UserId,
                 (c, u) => new CommentWithUser
                 {
-                    comment_id = c.comment_id,
-                    username = u.username,
-                    post_id = c.post_id,
-                    comment = c.comment,
-                    time_created = c.time_created
-                }).Where(c => c.post_id == postId).ToList();
+                    CommentId = c.CommentId,
+                    Username = u.Username,
+                    PostId = c.PostId,
+                    CommentString = c.CommentString,
+                    TimeCreated = c.TimeCreated
+                }).Where(c => c.PostId == postId).ToList();
         PostPage postPage = new()
         {
             Post = post,
@@ -56,23 +56,21 @@ public static class PostManager
     }
     public static void DeletePost(Post post, AppContext db)
     {
-        foreach (var tag in db.Tags.Where(t => t.post_id == post.id))
-            db.Tags.Remove(tag);
-        foreach (var comment in db.Comments.Where(c => c.post_id == post.id))
+        foreach (var comment in db.Comments.Where(c => c.PostId == post.Id))
             db.Comments.Remove(comment);
         db.SaveChanges();
-        File.Delete($"{Directory.GetCurrentDirectory()}/wwwroot{post.path}");
+        File.Delete($"{Directory.GetCurrentDirectory()}/wwwroot{post.Path}");
         db.Posts.Remove(post);
         db.SaveChanges();
     }
-    internal static void EditPost(Post post, string description, string tagString, AppContext db)
+    internal static void EditPost(Post post, string Description, string tagString, AppContext db)
     {
-        post.description = description;
+        post.Description = Description;
         db.Posts.Update(post);
-        foreach (var tag in db.Tags.Where(t => t.post_id == post.id))
+        foreach (var tag in db.Tags.Where(t => t.PostId == post.Id))
             db.Tags.Remove(tag);
         db.SaveChanges();
-        var tagArr = CreateTagArr(tagString, post.id);
+        var tagArr = CreateTagArr(tagString, post.Id);
         foreach(var tag in tagArr)
             db.Add(tag);
         db.SaveChanges();
@@ -85,7 +83,7 @@ public static class PostManager
             if(count == 0)
                 return 0;
             var number = new Random().Next(0, count);
-            return db.Posts.Skip(number).First().id;
+            return db.Posts.Skip(number).First().Id;
         }
     }
     public static Tag[] CreateTagArr(string tagString, int postId)
@@ -96,8 +94,8 @@ public static class PostManager
         {
             tagArr[i] = new Tag
             {
-                post_id = postId,
-                tag = tags[i]
+                PostId = postId,
+                TagString = tags[i]
             };
         }
         return tagArr;
@@ -106,10 +104,10 @@ public static class PostManager
     {
         Comment comm = new()
         {
-            user_id = userId,
-            comment = comment,
-            post_id = postId,
-            time_created = DateTime.Now
+            UserId = userId,
+            CommentString = comment,
+            PostId = postId,
+            TimeCreated = DateTime.Now
         };
         db.Add(comm);
         db.SaveChanges();

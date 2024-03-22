@@ -6,78 +6,80 @@ using MvcApp.Models;
 namespace MvcApp.Controllers;
 public class PostsController : Controller
 {
-    public IActionResult Page(int id = 1, string tags = "")
+    readonly AppContext _context;
+    public IActionResult Page(int Id = 1, string tags = "")
     {
         using AppContext db = new();
         Paginator pgn;
         ViewData["tags"] = tags;
         if (tags == "")
         {
-            pgn = new Paginator(id, db.Posts.Count());
-            ViewBag.Posts = db.Posts.OrderByDescending(x => x.id).
+            pgn = new Paginator(Id, db.Posts.Count());
+            ViewBag.Posts = _context.Posts.OrderByDescending(x => x.Id).
                 Skip(pgn.SkipValue).Take(pgn.PageSize).ToList();
         }
         else
         {
             var posts = Search.SearchByTags(tags, db, out int maxPosts);
-            pgn = new Paginator(id, maxPosts);
+            pgn = new Paginator(Id, maxPosts);
             ViewBag.Posts = posts.Skip(pgn.SkipValue).Take(pgn.PageSize).ToList();
         }
         ViewBag.Pgn = pgn;
         return View();
 
     }
-    public IActionResult Post(int id)
+    public IActionResult Post(int Id)
     {
         using AppContext db = new();
         if (Request.Method == "POST")
         {
             PostManager.AddComment(Request.Form["comment"],
-                id, db.Users.FirstOrDefault( u => u.username == User.Identity.Name).user_id, db);
-            return Redirect($"/posts/post?id={id}");
+                Id, db.Users.FirstOrDefault( u => u.Username == User.Identity.Name).UserId, db);
+            return Redirect($"/posts/post?Id={Id}");
         }
-        ViewBag.PostPage = PostManager.GetPostPage(id, db);
+        ViewBag.PostPage = PostManager.GetPostPage(Id, db);
         return View();
     }
     [Authorize]
-    public IActionResult Upload(int id)
+    public IActionResult Upload(int Id)
     {
         if (Request.Method == "POST")
         {
             using AppContext db = new();
             if (Request.Form.Files.Count < 1)
                 return BadRequest();
-            var post = PostManager.CreatePost(Request.Form["description"],
-                db.Users.FirstOrDefault(u => u.username == User.Identity.Name).user_id, Request.Form.Files[0]);
+            var post = PostManager.CreatePost(Request.Form["Description"],
+                db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).UserId, Request.Form.Files[0]);
             PostManager.LoadPostToDb(post, Request.Form["tags"], db);
         }
         return View();
     }
-    public IActionResult Edit(int id)
+    [Authorize]
+    public IActionResult Edit(int Id)
     {
         using (AppContext db = new())
         {
-            Post post = db.Posts.FirstOrDefault(p => p.id == id);
-            if (post.user_id != db.Users.FirstOrDefault(u => u.username == User.Identity.Name).user_id)
+            Post post = db.Posts.FirstOrDefault(p => p.Id == Id);
+            if (post.UserId != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).UserId)
                 return Unauthorized();
-            var tags = db.Tags.Where(t => t.post_id == post.id).Select(t => t.tag);
+            var tags = db.Tags.Where(t => t.PostId == post.Id).Select(t => t.TagString);
             ViewData["tags"] = string.Join(',', tags);
-            ViewData["description"] = post.description;
-            ViewData["path"] = post.path;
+            ViewData["Description"] = post.Description;
+            ViewData["Path"] = post.Path;
             if (Request.Method == "POST")
             {
-                PostManager.EditPost(post, Request.Form["description"], Request.Form["tags"], db);
-                return Redirect($"~/posts/post?id={post.id}");
+                PostManager.EditPost(post, Request.Form["Description"], Request.Form["tags"], db);
+                return Redirect($"~/posts/post?Id={post.Id}");
             }
         }
         return View();
     }
-
-    public IActionResult Delete(int id)
+    [Authorize]
+    public IActionResult Delete(int Id)
     {
         using AppContext db = new();
-        var post = db.Posts.FirstOrDefault(p => p.id == id);
-        if (post.user_id != db.Users.FirstOrDefault(u => u.username == User.Identity.Name).user_id)
+        var post = db.Posts.FirstOrDefault(p => p.Id == Id);
+        if (post.UserId != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).UserId)
             return Unauthorized();
         else if (post != null && Request.Method == "POST")
         {

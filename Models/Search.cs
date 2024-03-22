@@ -6,13 +6,13 @@ public static class Search
     public static List<Post> SearchByTags(string tagString, AppContext db, out int maxPosts)
     {
         string[] tags = tagString.Split(",", StringSplitOptions.TrimEntries);
-        IEnumerable<int> idArr = db.Tags.Where(t => t.tag == tags[0]).Select(t => t.post_id).ToArray();
+        var idArr = db.Tags.Where(t => t.TagString == tags[0]).Select(t => t.PostId);
         for(int i = 1; i < tags.Length; i++)
         {
-            IEnumerable<int> temp = db.Tags.Where(t => t.tag == tags[i]).Select(t => t.post_id).ToArray();
+            var temp = db.Tags.Where(t => t.TagString == tags[i]).Select(t => t.PostId);
             idArr = temp.Intersect(idArr);
         }
-        var posts = db.Posts.Where(p => idArr.Contains(p.id)).ToList();
+        var posts = db.Posts.Where(p => idArr.Contains(p.Id)).ToList();
         maxPosts = posts.Count;
         return posts;
     }

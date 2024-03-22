@@ -1,5 +1,5 @@
 ﻿<div class="image_container">
-    <img src="@ViewBag.PostPage.Post.path";>
+    <img src="@ViewBag.PostPage.Post.Path";>
     <br />
     Tags: @{
         foreach (var item in ViewBag.PostPage.Tags)
@@ -8,14 +8,14 @@
         }
     }
     <br />
-    Description: @ViewBag.PostPage.Post.description
+    Description: @ViewBag.PostPage.Post.Description
     <br />
     Posted by: @ViewBag.PostPage.Username
     <br />
     @{if(ViewBag.PostPage.Username == User.Identity.Name)
     {
-        <a href="/posts/edit?id=@ViewBag.PostPage.Post.id">Edit post</a>
-        <form class="menu-element" enctype="multipart/form-data" action="/posts/delete?id=@ViewBag.PostPage.Post.id" method="POST">
+        <a href="/posts/edit?Id=@ViewBag.PostPage.Post.Id">Edit post</a>
+        <form class="menu-element" enctype="multipart/form-data" action="/posts/delete?Id=@ViewBag.PostPage.Post.Id" method="POST">
             <input type="submit" value="Delete post" name="delete">
         </form>
     }}
@@ -31,7 +31,7 @@
     @{foreach (var comment in ViewBag.PostPage.CommentSection)
         {
             <div>
-                @comment.time_created
+                @comment.TimeCreated
                 @comment.username
                 <br>
                 @comment.comment

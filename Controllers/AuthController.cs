@@ -29,7 +29,7 @@ public class AuthController : Controller
           {
             using Models.AppContext db = new();
             if (UserManager.Registrate(Request.Form["username"], Request.Form["password"],
-                 Request.Form["email"], db))
+                 Request.Form["Email"], db))
                 return Redirect("~/auth/login");
             else
                 return BadRequest();

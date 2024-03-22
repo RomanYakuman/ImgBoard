@@ -23,5 +23,5 @@ app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Posts}/{action=Page}/{id?}");
+    pattern: "{controller=Posts}/{action=Page}/{Id?}");
 app.Run();

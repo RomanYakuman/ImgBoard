@@ -5,15 +5,15 @@ namespace MvcApp.Models;
 
 public static partial class UserManager
 {
-    public static bool Registrate(string username, string password, string email, AppContext db)
+    public static bool Registrate(string? username, string? password, string? email, AppContext db)
     {
         if (PasswordCheck(password) && UsernameRegCheck(password, db))
         {
             User user = new User
             {
-               username = username,
-               password = password,
-               email = email
+               Username = username,
+               Password = password,
+               Email = email
             };
             db.Add(user);
             db.SaveChanges();
@@ -22,18 +22,18 @@ public static partial class UserManager
         else
             return false;
     }
-    public static ClaimsPrincipal Authenticate(string username, string password, AppContext db)
+    public static ClaimsPrincipal Authenticate(string? username, string? password, AppContext db)
     {
-        var user = db.Users.FirstOrDefault(u => u.username == username);
-        if(user != null && user.password == password)
+        var user = db.Users.FirstOrDefault(u => u.Username == username);
+        if(user != null && user.Password == password)
         {
-            var claims = new List<Claim>{new Claim(ClaimTypes.Name, user.username)};
+            var claims = new List<Claim>{new Claim(ClaimTypes.Name, user.Username)};
             ClaimsIdentity claimsIdentity = new(claims, "Cookies");
             return new ClaimsPrincipal(claimsIdentity);
         }
         return null;
     }
-    private static bool PasswordCheck(string password)
+    public static bool PasswordCheck(string? password)
     {
         var regexItem = validRegex();
         if(password == null || password.Length < 5 || password.Length > 25 
@@ -43,11 +43,11 @@ public static partial class UserManager
         }
         return true;
     }
-    private static bool UsernameRegCheck(string username, AppContext db)
+    public static bool UsernameRegCheck(string? username, AppContext db)
     {
         var regexItem = validRegex();
         if(username == null || username.Length < 4 || username.Length > 25 
-            || db.Users.FirstOrDefault(u => u.username == username) != null)
+            || db.Users.FirstOrDefault(u => u.Username == username) != null)
                 return false;
         return true;
     }

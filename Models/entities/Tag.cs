@@ -1,11 +1,10 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace MvcApp.Models;
 
-[PrimaryKey(nameof(post_id), nameof(tag))]
+[PrimaryKey(nameof(PostId), nameof(TagString))]
 public class Tag
 {
-    public int post_id {get; set;}
-    public string tag {get; set;}
+    public int PostId {get; set;}
+    public required string TagString {get; set;}
 }
