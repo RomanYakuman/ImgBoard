@@ -4,7 +4,7 @@
     Tags: @{
         foreach (var item in ViewBag.PostPage.Tags)
         {
-            <a href="">@item</a>
+            <a href="/posts/page?tags=@item">@item</a>
         }
     }
     <br />
@@ -32,9 +32,9 @@
         {
             <div>
                 @comment.TimeCreated
-                @comment.username
+                @comment.Username
                 <br>
-                @comment.comment
+                @comment.CommentString
             </div>
         }
     }

@@ -16,12 +16,12 @@ public static class PostManager
             db.SaveChanges();
         }
     }
-    public static Post CreatePost(string Description, int userId, IFormFile file)
+    public static Post CreatePost(string Description, int Id, IFormFile file)
     {
         Post post = new()
         {
             TimeCreated = DateTime.Now,
-            UserId = userId,
+            Id = Id,
             Description = Description,
             Path = @$"/server/{Path.GetRandomFileName()}{Path.GetRandomFileName()}.{file.ContentType.Split("/")[1]}"
         };
@@ -33,13 +33,13 @@ public static class PostManager
     {
         var post = db.Posts.FirstOrDefault(p => p.Id == postId);
         var tags = db.Tags.Where(t => t.PostId == postId).Select(t => t.TagString).ToList();
-        var username = db.Users.FirstOrDefault(u => u.UserId == post.UserId).Username;
+        var username = db.Users.FirstOrDefault(u => u.Id == post.UserId).Username;
         var comments = db.Comments.Join(db.Users,
-                c => c.UserId, 
-                u => u.UserId,
+                c => c.Id, 
+                u => u.Id,
                 (c, u) => new CommentWithUser
                 {
-                    CommentId = c.CommentId,
+                    Id = c.Id,
                     Username = u.Username,
                     PostId = c.PostId,
                     CommentString = c.CommentString,
@@ -100,11 +100,11 @@ public static class PostManager
         }
         return tagArr;
     }
-    public static void AddComment(string comment, int postId, int userId, AppContext db)
+    public static void AddComment(string comment, int postId, int Id, AppContext db)
     {
         Comment comm = new()
         {
-            UserId = userId,
+            Id = Id,
             CommentString = comment,
             PostId = postId,
             TimeCreated = DateTime.Now

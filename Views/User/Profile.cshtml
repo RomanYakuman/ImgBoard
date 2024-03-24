@@ -3,7 +3,7 @@
         <tbody>
         <tr>
             <td>
-                <h1 class="text-input">@ViewBag.User.username</h1>
+                <h1 class="text-input">@ViewBag.User.Username</h1>
             </td>
         </tr>
         <tr class="text-input">
@@ -11,7 +11,7 @@
                 User Id: 
             </td>
             <td>
-                @ViewBag.User.UserId
+                @ViewBag.User.Id
             </td>
         </tr>
         <tr class="text-input">
@@ -35,7 +35,7 @@
                 Uploads: 
             </td>
             <td>
-                <a href="/user/posts?username=@ViewBag.User.username">@ViewData["uploads"]</a>
+                <a href="/user/posts?Id=@ViewBag.User.Id">@ViewData["uploads"]</a>
             </td>
         </tr>
         <tr class="text-input">
@@ -43,7 +43,7 @@
                 Comments: 
             </td>
             <td>
-                <a href="/user/comments?username=@ViewBag.User.username">@ViewData["comments"]</a>
+                <a href="/user/comments?Id=@ViewBag.User.Id">@ViewData["comments"]</a>
             </td>
         </tr>
         <tr>

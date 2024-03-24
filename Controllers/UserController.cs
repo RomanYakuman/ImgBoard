@@ -15,24 +15,25 @@ public class UserController : Controller
             var user = db.Users.First(u => u.Username == Username);
             ViewBag.User = user;
             ViewData["uploads"] = db.Posts.
-                Where(p => p.UserId == user.UserId).Count();
+                Where(p => p.UserId == user.Id).Count();
             ViewData["comments"] = db.Comments.
-                Where(c => c.UserId == user.UserId).Count();
+                Where(c => c.UserId == user.Id).Count();
         }
         return View();
     }
-    public IActionResult Comments(int UserId)
+    public IActionResult Comments(int Id)
     {
         using (AppContext db = new())
-        ViewBag.comments = db.Comments.Where(c => c.UserId == UserId)
+        ViewBag.comments = db.Comments.Where(c => c.UserId == Id)
             .OrderByDescending(c => c.TimeCreated).ToList();
         return View();
     }
-    public IActionResult Posts(int UserId, int Id = 1)
+    public IActionResult Posts(int Id)
     {
         using AppContext db = new();
-        ViewBag.Posts = db.Posts.Where(p => p.UserId == UserId)
+        ViewBag.Posts = db.Posts.Where(p => p.UserId == Id)
             .OrderByDescending(x =>  x.Id).ToList();
+        ViewData["Username"] = db.Users.First(u => u.Id == Id).Username;
         return View();
     }
     [Authorize]

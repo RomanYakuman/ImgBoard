@@ -6,7 +6,6 @@ using MvcApp.Models;
 namespace MvcApp.Controllers;
 public class PostsController : Controller
 {
-    readonly AppContext _context;
     public IActionResult Page(int Id = 1, string tags = "")
     {
         using AppContext db = new();
@@ -15,7 +14,7 @@ public class PostsController : Controller
         if (tags == "")
         {
             pgn = new Paginator(Id, db.Posts.Count());
-            ViewBag.Posts = _context.Posts.OrderByDescending(x => x.Id).
+            ViewBag.Posts = db.Posts.OrderByDescending(x => x.Id).
                 Skip(pgn.SkipValue).Take(pgn.PageSize).ToList();
         }
         else
@@ -34,7 +33,7 @@ public class PostsController : Controller
         if (Request.Method == "POST")
         {
             PostManager.AddComment(Request.Form["comment"],
-                Id, db.Users.FirstOrDefault( u => u.Username == User.Identity.Name).UserId, db);
+                Id, db.Users.FirstOrDefault( u => u.Username == User.Identity.Name).Id, db);
             return Redirect($"/posts/post?Id={Id}");
         }
         ViewBag.PostPage = PostManager.GetPostPage(Id, db);
@@ -49,7 +48,7 @@ public class PostsController : Controller
             if (Request.Form.Files.Count < 1)
                 return BadRequest();
             var post = PostManager.CreatePost(Request.Form["Description"],
-                db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).UserId, Request.Form.Files[0]);
+                db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).Id, Request.Form.Files[0]);
             PostManager.LoadPostToDb(post, Request.Form["tags"], db);
         }
         return View();
@@ -60,7 +59,7 @@ public class PostsController : Controller
         using (AppContext db = new())
         {
             Post post = db.Posts.FirstOrDefault(p => p.Id == Id);
-            if (post.UserId != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).UserId)
+            if (post.Id != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).Id)
                 return Unauthorized();
             var tags = db.Tags.Where(t => t.PostId == post.Id).Select(t => t.TagString);
             ViewData["tags"] = string.Join(',', tags);
@@ -79,7 +78,7 @@ public class PostsController : Controller
     {
         using AppContext db = new();
         var post = db.Posts.FirstOrDefault(p => p.Id == Id);
-        if (post.UserId != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).UserId)
+        if (post.Id != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).Id)
             return Unauthorized();
         else if (post != null && Request.Method == "POST")
         {

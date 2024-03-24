@@ -5,7 +5,7 @@ namespace MvcApp.Models;
 public class Comment
 {
     [Key]
-    public int CommentId {get; set;}
+    public int Id {get; set;}
     public int UserId {get; set;}
     public int PostId {get; set;}
     public required string CommentString {get; set;}
@@ -14,7 +14,7 @@ public class Comment
 
 public class CommentWithUser
 {
-    public int CommentId { get; set; }
+    public int Id { get; set; }
     public required string Username { get; set; }
     public int PostId { get; set; }
     public required string CommentString { get; set; }
