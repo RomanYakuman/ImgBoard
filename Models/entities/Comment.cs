@@ -10,13 +10,5 @@ public class Comment
     public int PostId {get; set;}
     public required string CommentString {get; set;}
     public DateTime TimeCreated {get; set;}
-}
-
-public class CommentWithUser
-{
-    public int Id { get; set; }
-    public required string Username { get; set; }
-    public int PostId { get; set; }
-    public required string CommentString { get; set; }
-    public DateTime TimeCreated { get; set; }
+    public User? User {get; set;}
 }

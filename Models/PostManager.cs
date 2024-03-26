@@ -1,27 +1,32 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
+
 namespace MvcApp.Models;
 
 public static class PostManager
 {
-    public static void LoadPostToDb(Post post, string tags, AppContext db)
+    public static void LoadPostToDb(Post post, string tagString, AppContext db)
     {
         db.Add(post);
         db.SaveChanges();
         var newPost = db.Posts.FirstOrDefault(p => p.Path == post.Path);
-        if(tags != null && tags.Length > 0 && newPost != null)
+        string[] tags = tagString.Split(",", StringSplitOptions.TrimEntries);
+        if(tags.Length > 0 && newPost != null)
         {
             var tagArr = CreateTagArr(tags, newPost.Id);
             foreach(var tag in tagArr)
+            {
                 db.Add(tag);
+                TagCountIncrease(tag.TagString, db);
+            }
             db.SaveChanges();
         }
     }
-    public static Post CreatePost(string Description, int Id, IFormFile file)
+    public static Post CreatePost(string Description, int userId, IFormFile file)
     {
         Post post = new()
         {
             TimeCreated = DateTime.Now,
-            Id = Id,
+            UserId = userId,
             Description = Description,
             Path = @$"/server/{Path.GetRandomFileName()}{Path.GetRandomFileName()}.{file.ContentType.Split("/")[1]}"
         };
@@ -31,34 +36,22 @@ public static class PostManager
     }
     public static PostPage GetPostPage(int postId, AppContext db)
     {
-        var post = db.Posts.FirstOrDefault(p => p.Id == postId);
-        var tags = db.Tags.Where(t => t.PostId == postId).Select(t => t.TagString).ToList();
-        var username = db.Users.FirstOrDefault(u => u.Id == post.UserId).Username;
-        var comments = db.Comments.Join(db.Users,
-                c => c.Id, 
-                u => u.Id,
-                (c, u) => new CommentWithUser
-                {
-                    Id = c.Id,
-                    Username = u.Username,
-                    PostId = c.PostId,
-                    CommentString = c.CommentString,
-                    TimeCreated = c.TimeCreated
-                }).Where(c => c.PostId == postId).ToList();
+        var post = db.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == postId);
+        var tags = post.Tags.Select(t => t.TagString);
+        var username = db.Users.First(u => u.Id == post.UserId).Username;
+        var commentSection = db.Comments.Include(c => c.User)
+            .Where(c => c.PostId == postId).ToList();
         PostPage postPage = new()
         {
             Post = post,
             Username = username,
             Tags = tags,
-            CommentSection =  comments
+            CommentSection = commentSection
         };
         return postPage;
     }
     public static void DeletePost(Post post, AppContext db)
     {
-        foreach (var comment in db.Comments.Where(c => c.PostId == post.Id))
-            db.Comments.Remove(comment);
-        db.SaveChanges();
         File.Delete($"{Directory.GetCurrentDirectory()}/wwwroot{post.Path}");
         db.Posts.Remove(post);
         db.SaveChanges();
@@ -70,7 +63,7 @@ public static class PostManager
         foreach (var tag in db.Tags.Where(t => t.PostId == post.Id))
             db.Tags.Remove(tag);
         db.SaveChanges();
-        var tagArr = CreateTagArr(tagString, post.Id);
+        var tagArr = CreateTagArr(tagString.Split(',', StringSplitOptions.RemoveEmptyEntries), post.Id);
         foreach(var tag in tagArr)
             db.Add(tag);
         db.SaveChanges();
@@ -86,9 +79,8 @@ public static class PostManager
             return db.Posts.Skip(number).First().Id;
         }
     }
-    public static Tag[] CreateTagArr(string tagString, int postId)
+    public static Tag[] CreateTagArr(string[] tags, int postId)
     {
-        string[] tags = tagString.Split(",", StringSplitOptions.TrimEntries);
         Tag[] tagArr = new Tag[tags.Length];
         for(int i = 0; i < tagArr.Length; i++)
         {
@@ -100,11 +92,11 @@ public static class PostManager
         }
         return tagArr;
     }
-    public static void AddComment(string comment, int postId, int Id, AppContext db)
+    public static void AddComment(string comment, int postId, int userId, AppContext db)
     {
         Comment comm = new()
         {
-            Id = Id,
+            UserId = userId,
             CommentString = comment,
             PostId = postId,
             TimeCreated = DateTime.Now
@@ -112,12 +104,29 @@ public static class PostManager
         db.Add(comm);
         db.SaveChanges();
     }
+    public static void TagCountIncrease(string tagString, AppContext db)
+    {
+        var tagCount = db.TagsCount.FirstOrDefault(t => t.TagString == tagString);
+        if(tagCount == null)
+        {
+            tagCount = new TagCount(){TagString = tagString, Count = 1};
+        }
+        else
+        {
+            tagCount.Count++;
+            db.TagsCount.Update(tagCount);
+        }
+    }
+    public static void TagCountDecrease()
+    {
+        
+    }
 }
 public struct PostPage
 {
-    public List<CommentWithUser> CommentSection {get;set;}
+    public IEnumerable<Comment> CommentSection {get;set;}
     public string Username {get; set;}
-    public List<string> Tags {get;set;}
+    public IEnumerable<string> Tags {get;set;}
     public Post Post {get;set;}
 
 }

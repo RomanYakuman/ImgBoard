@@ -10,4 +10,5 @@ public partial class User
     public required string Username {get; set;}
     public required string Password {get; set;}
     public DateTime RegDate { get; set;}
+    public ICollection<Comment> Comments{get; } = new List<Comment>();
 }

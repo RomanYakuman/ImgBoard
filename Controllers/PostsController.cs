@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MvcApp.Models;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace MvcApp.Controllers;
 public class PostsController : Controller
@@ -36,11 +37,23 @@ public class PostsController : Controller
                 Id, db.Users.FirstOrDefault( u => u.Username == User.Identity.Name).Id, db);
             return Redirect($"/posts/post?Id={Id}");
         }
-        ViewBag.PostPage = PostManager.GetPostPage(Id, db);
+        try
+        {
+            var postPage = PostManager.GetPostPage(Id, db);
+            ViewBag.PostPage = postPage;
+        }
+        catch (RuntimeBinderException)
+        {
+            return NotFound();
+        }
+        catch( Exception)
+        {
+            return BadRequest();
+        }
         return View();
     }
     [Authorize]
-    public IActionResult Upload(int Id)
+    public IActionResult Upload()
     {
         if (Request.Method == "POST")
         {
@@ -59,7 +72,7 @@ public class PostsController : Controller
         using (AppContext db = new())
         {
             Post post = db.Posts.FirstOrDefault(p => p.Id == Id);
-            if (post.Id != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).Id)
+            if (post.UserId != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).Id)
                 return Unauthorized();
             var tags = db.Tags.Where(t => t.PostId == post.Id).Select(t => t.TagString);
             ViewData["tags"] = string.Join(',', tags);
@@ -78,7 +91,7 @@ public class PostsController : Controller
     {
         using AppContext db = new();
         var post = db.Posts.FirstOrDefault(p => p.Id == Id);
-        if (post.Id != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).Id)
+        if (post.UserId != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).Id)
             return Unauthorized();
         else if (post != null && Request.Method == "POST")
         {

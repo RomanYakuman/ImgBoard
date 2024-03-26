@@ -7,5 +7,6 @@ public class Post
     public int UserId { get; set; }
     public required string Path { get; set; }
     public string? Description { get; set; }
-    public ICollection<Tag>? Tags { get; } = new List<Tag>();
+    public ICollection<Tag> Tags { get; } = new List<Tag>();
+    public ICollection<Comment> Comments { get; } = new List<Comment>();
 }
