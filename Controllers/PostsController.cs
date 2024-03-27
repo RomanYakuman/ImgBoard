@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MvcApp.Models;
 using Microsoft.CSharp.RuntimeBinder;
+using Microsoft.EntityFrameworkCore;
 
 namespace MvcApp.Controllers;
 public class PostsController : Controller
@@ -46,10 +47,16 @@ public class PostsController : Controller
         {
             return NotFound();
         }
-        catch( Exception)
-        {
-            return BadRequest();
-        }
+        return View();
+    }
+    public IActionResult Tags(int Id = 1)
+    {
+        using AppContext db = new();
+        var tags = db.TagsCount;
+        var pgn = new Paginator(Id, tags.Count());
+        ViewBag.Tags = tags.OrderByDescending(t => t.Count)
+            .Skip(pgn.SkipValue).Take(pgn.PageSize).ToList();
+        ViewBag.Pgn = pgn;
         return View();
     }
     [Authorize]
@@ -90,7 +97,7 @@ public class PostsController : Controller
     public IActionResult Delete(int Id)
     {
         using AppContext db = new();
-        var post = db.Posts.FirstOrDefault(p => p.Id == Id);
+        var post = db.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == Id);
         if (post.UserId != db.Users.FirstOrDefault(u => u.Username == User.Identity.Name).Id)
             return Unauthorized();
         else if (post != null && Request.Method == "POST")

@@ -1,0 +1,28 @@
+<div class="tags">
+    @foreach (var tag in ViewBag.Tags)
+    {
+        <a href="/posts/page?id=1&tags=@tag.TagString">@tag.TagString ( @tag.Count )</a>
+    }
+</div>
+<div class="paginator">
+    @{if(ViewBag.Pgn.FirstPage > 0)
+    {
+        var prev = ViewBag.Pgn.CurPage-1;
+        var next = ViewBag.Pgn.CurPage+1;
+        if (ViewBag.Pgn.CurPage > 1)
+        {
+            <a href="/posts/tags?Id=1">&lt;&lt;</a>
+            <a href="/posts/tags?Id=@prev">&lt;</a>
+        }
+        for(int i = @ViewBag.Pgn.FirstPage; i <= @ViewBag.Pgn.LastPage; i++)
+        {
+            <a href="/posts/tags?Id=@i">@i</a>
+        }
+        if (ViewBag.Pgn.CurPage < ViewBag.Pgn.PageCount)
+        {
+            <a href="/posts/tags?Id=@next">></a>
+            <a href="/posts/tags?Id=@ViewBag.Pgn.PageCount">>></a>
+        }
+    }
+    }
+</div>

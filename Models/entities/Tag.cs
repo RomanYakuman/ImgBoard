@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace MvcApp.Models;
@@ -9,4 +10,10 @@ public class Tag
     public required string TagString {get; set;}
     public Post? Post {get; set;}
 
+}
+public class TagCount
+{
+    [Key]
+    public required string TagString {get; set;}
+    public int Count {get; set;}
 }

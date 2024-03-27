@@ -2,9 +2,9 @@
     <img src="@ViewBag.PostPage.Post.Path";>
     <br />
     Tags: @{
-        foreach (var item in ViewBag.PostPage.Tags)
+        foreach (var tag in ViewBag.PostPage.Tags)
         {
-            <a href="/posts/page?tags=@item">@item</a>
+            <a href="/posts/page?tags=@tag.TagString">@tag.TagString (@tag.Count)</a>
         }
     }
     <br />

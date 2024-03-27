@@ -15,17 +15,17 @@
         var next = ViewBag.Pgn.CurPage+1;
         if (ViewBag.Pgn.CurPage > 1)
         {
-            <a href="/Posts/page?Id=1">&lt;&lt;</a>
-            <a href="/Posts/page?Id=@prev&tags=@ViewData["tags"]">&lt;</a>
+            <a href="/posts/page?id=1">&lt;&lt;</a>
+            <a href="/posts/page?id=@prev&tags=@ViewData["tags"]">&lt;</a>
         }
         for(int i = @ViewBag.Pgn.FirstPage; i <= @ViewBag.Pgn.LastPage; i++)
         {
-            <a href="/Posts/page?Id=@i&tags=@ViewData["tags"]">@i</a>
+            <a href="/Posts/page?id=@i&tags=@ViewData["tags"]">@i</a>
         }
         if (ViewBag.Pgn.CurPage < ViewBag.Pgn.PageCount)
         {
-            <a href="/Posts/page?Id=@next&tags=@ViewData["tags"]">></a>
-            <a href="/Posts/page?Id=@ViewBag.Pgn.PageCount&tags=@ViewData["tags"]">>></a>
+            <a href="/Posts/page?id=@next&tags=@ViewData["tags"]">></a>
+            <a href="/Posts/page?id=@ViewBag.Pgn.PageCount&tags=@ViewData["tags"]">>></a>
         }
     }
     }

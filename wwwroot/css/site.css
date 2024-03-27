@@ -66,3 +66,15 @@ img{
 .text-input{
     text-align: right;
 }
+.tags
+{
+    display: grid;
+    grid-template-columns: repeat(4, 400px);
+    column-gap: 20px;
+    row-gap: 20px;
+    width: 85%;
+    clear: both;
+    margin: auto;
+      margin-top: auto;
+    margin-top: 35px;
+}

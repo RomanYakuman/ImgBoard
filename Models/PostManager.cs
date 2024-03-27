@@ -37,7 +37,12 @@ public static class PostManager
     public static PostPage GetPostPage(int postId, AppContext db)
     {
         var post = db.Posts.Include(p => p.Tags).FirstOrDefault(p => p.Id == postId);
-        var tags = post.Tags.Select(t => t.TagString);
+        var temp = post.Tags.Select(t => t.TagString).ToList();
+        var tags = new List<TagCount>(temp.Count);
+        for (int i = 0; i < temp.Count; i++)
+        {
+            tags.Add(db.TagsCount.Where(tc => tc.TagString == temp[i]).First());
+        }
         var username = db.Users.First(u => u.Id == post.UserId).Username;
         var commentSection = db.Comments.Include(c => c.User)
             .Where(c => c.PostId == postId).ToList();
@@ -52,6 +57,8 @@ public static class PostManager
     }
     public static void DeletePost(Post post, AppContext db)
     {
+        foreach (var tag in post.Tags)
+            TagCountDecrease(tag.TagString, db);
         File.Delete($"{Directory.GetCurrentDirectory()}/wwwroot{post.Path}");
         db.Posts.Remove(post);
         db.SaveChanges();
@@ -60,12 +67,18 @@ public static class PostManager
     {
         post.Description = Description;
         db.Posts.Update(post);
-        foreach (var tag in db.Tags.Where(t => t.PostId == post.Id))
+        foreach (var tag in db.Tags.Where(t => t.PostId == post.Id).ToList())
+        {
+            TagCountDecrease(tag.TagString, db);
             db.Tags.Remove(tag);
+        }
         db.SaveChanges();
-        var tagArr = CreateTagArr(tagString.Split(',', StringSplitOptions.RemoveEmptyEntries), post.Id);
+        var tagArr = CreateTagArr(tagString.Split(',', StringSplitOptions.RemoveEmptyEntries), post.Id).ToList();
         foreach(var tag in tagArr)
+        {
+            TagCountIncrease(tag.TagString, db);
             db.Add(tag);
+        }
         db.SaveChanges();
     }
     public static int GetRandomPostId()
@@ -110,6 +123,7 @@ public static class PostManager
         if(tagCount == null)
         {
             tagCount = new TagCount(){TagString = tagString, Count = 1};
+            db.TagsCount.Add(tagCount);
         }
         else
         {
@@ -117,16 +131,20 @@ public static class PostManager
             db.TagsCount.Update(tagCount);
         }
     }
-    public static void TagCountDecrease()
+    public static void TagCountDecrease(string tagString, AppContext db)
     {
-        
+        var tagCount = db.TagsCount.FirstOrDefault(t => t.TagString == tagString);
+        if(--tagCount.Count < 1)
+            db.TagsCount.Remove(tagCount);
+        else
+            db.TagsCount.Update(tagCount);
     }
 }
 public struct PostPage
 {
     public IEnumerable<Comment> CommentSection {get;set;}
     public string Username {get; set;}
-    public IEnumerable<string> Tags {get;set;}
+    public IEnumerable<TagCount> Tags {get;set;}
     public Post Post {get;set;}
 
 }
